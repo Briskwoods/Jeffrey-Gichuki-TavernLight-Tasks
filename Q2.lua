@@ -2,9 +2,15 @@
 global maxMemberCount = 1000;
 
 function printSmallGuildNames(memberCount)
--- this method is supposed to print names of all guilds that have less than memberCount max members
-local selectGuildQuery = "SELECT name FROM guilds WHERE max_members < " maxMemberCount";"
-local resultId = db.storeQuery(string.format(selectGuildQuery, memberCount))
-local guildName = result.getString("name")
+-- This method prints names of all guilds that have less than memberCount max members
+local selectGuildQuery = "SELECT name FROM guilds WHERE max_members < "maxMemberCount""
+-- Statement is prepared to prevent SQL injection
+local stmt = db.prepareStatement(selectGuildQuery)
+local result = stmt:executeQuery()
+
+-- Fetch and print guild names
+while result:next() do
+local guildName = result:getString("name")
 print(guildName)
+end
 end
